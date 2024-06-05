@@ -50,11 +50,9 @@ def lehmer_gcd(a, b):
     return a
 
 t = time.time()
-for i in range(100):
-    lehmer_gcd(2**123 + 3**653 + 5**23 + 7**49, 2**653 + 2**123 + 5**23 + 11**34)
+print(lehmer_gcd(2**123 + 3**653 + 5**23 + 7**49, 2**653 + 2**123 + 5**23 + 11**34))
 print(time.time() - t)
 
 t = time.time()
-for i in range(100):
-    gcd(2**123 + 3**653 + 5**23 + 7**49, 2**653 + 2**123 + 5**23 + 11**34)
+print(gcd(2**123 + 3**653 + 5**23 + 7**49, 2**653 + 2**123 + 5**23 + 11**34))
 print(time.time() - t)
