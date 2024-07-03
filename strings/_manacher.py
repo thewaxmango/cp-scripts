@@ -1,0 +1,1 @@
+# Finds the length of the longest palindrome about each character

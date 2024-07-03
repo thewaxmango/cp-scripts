@@ -1,4 +1,4 @@
-# COMPLETE
+# Translated from CP-ALGORITHMS
 
 from dataclasses import dataclass, field
 
@@ -102,8 +102,6 @@ def suffix_tree(s: str):
         tree_extend(i)
     
     return t[:sz]
-    
-def suffix_tree_compressed(s):
-    pass
 
-print(suffix_tree("abcabxabcd"))
+if __name__ == "__main__":
+    print(suffix_tree("abcabxabcd"))
