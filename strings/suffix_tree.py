@@ -104,4 +104,4 @@ def suffix_tree(s: str):
     return t[:sz]
 
 if __name__ == "__main__":
-    print(suffix_tree("abcabxabcd"))
+    print(*suffix_tree("mississippi"), sep="\n")
