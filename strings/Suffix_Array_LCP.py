@@ -4,15 +4,10 @@
 def Suffix_Array(s: str):
     return SAIS([ord(c) for c in s])
 
-def Longest_Common_Prefix(s: str, SA: list[int]):
+def LCPrefix(s: str, SA: list[int]):
     return KASAI([ord(c) for c in s], SA)
 
 def SAIS(A: list[int]):
-    """
-    Calculates suffix array in O(len(A) + max(A))
-    Input:
-    Int list A with A[i] >= 0 for all i
-    """
     n = len(A)
     buckets = [0] * (max(A) + 2)
     for a in A:
@@ -69,11 +64,6 @@ def SAIS(A: list[int]):
     return induced_sort(LMS)
 
 def KASAI(A, SA):
-    """
-    Calculates LCP array in O(n) time
-    Input:
-    String A and its suffix array SA
-    """
     n = len(A)
     rank = [0] * n
     for i in range(n):
