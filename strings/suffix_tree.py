@@ -1,36 +1,39 @@
-# Translated from CP-ALGORITHMS
+# Suffix Array translated from CP-ALGORITHMS
+# Generalized coded by me
 
 from dataclasses import dataclass, field
+from bisect import bisect_left as bsl
 
-MAXN = 10**5
-
-def suffix_tree(s: str):
-    @dataclass
-    class Node:
-        l: int = 0
-        r: int = 0
-        par: int = -1
-        link: int = -1
-        next: dict[str, int] = field(default_factory = lambda: {})
-        
-        def __str__(self):
-            return f"<l: {self.l}, r: {self.r}, par: {self.par}, link: {self.link}, next: {self.next}>"
-        
-        def len(self) -> int:
-            return self.r - self.l
-        
-        def get(self, c: str) -> int:
-            if c not in self.next:
-                self.next[c] = -1
-            return self.next[c]
+@dataclass
+class Node:
+    l: int = 0
+    r: int = 0
+    par: int = -1
+    link: int = -1
+    next: dict[str, int] = field(default_factory = lambda: {})
     
+    # for generalized may want to add data regarding which strings contain
+    
+    def __str__(self):
+        return f"<l: {self.l}, r: {self.r}, par: {self.par}, link: {self.link}, next: {self.next}>"
+    
+    def len(self) -> int:
+        return self.r - self.l
+    
+    def get(self, c: str) -> int:
+        if c not in self.next:
+            self.next[c] = -1
+        return self.next[c]
+
+def Suffix_Tree(s: str): 
     @dataclass
     class State:
         v: int
         pos: int
-        
+
+    s += "$"
     n: int = len(s)
-    t: list[Node] = [Node() for _ in range(MAXN)]
+    t: list[Node] = [Node() for _ in range(2*n)]
     sz: int = 1
     ptr: State = State(0, 0)
     
@@ -103,5 +106,80 @@ def suffix_tree(s: str):
     
     return t[:sz]
 
+# don't use suffix tree to construct suffix array unless you have to
+def Suffix_Tree_To_Array(S: str, ST: list[Node]) -> list[int]:
+    S += "$"
+    N = len(S)
+    ret: list[int] = []
+    
+    s_dict: dict[int, int] = {-1: 0}
+    stack: list[int] = [0]
+    
+    while stack:
+        idx: int = stack.pop()
+        node: Node = ST[idx]
+        
+        s_dict[idx] = s_dict[node.par] - node.l + node.r
+        if node.next:
+            stack += [v for _k, v in sorted(node.next.items(), reverse=True)]
+        else:
+            ret.append(N - s_dict[idx])
+    
+    return ret[1:]
+
+def Generalized_Suffix_Tree(SRR: list[str]):
+    S: str = "$".join(SRR)
+    ST: list[Node] = Suffix_Tree(S)
+    
+    sentinels: list[int] = [i for i, c in enumerate(S) if c == "$"] + [len(S)]
+    for node in ST:
+        l_sentinel = bsl(sentinels, node.l)
+        r_sentinel = bsl(sentinels, node.r - 1)
+        
+        # if crosses a sentinel, prune edge and children
+        if l_sentinel != r_sentinel:
+            node.next = {}
+            node.r = sentinels[l_sentinel] + 1
+            continue
+        
+        # if ends on a sentinel, prune children
+        if node.r == sentinels[r_sentinel] + 1:
+            node.next = {}
+    
+    return ST
+
+def Compact_Sort_ST(ST: list[Node]):    
+    sz: int = 0
+    cst: list[Node] = []
+    
+    stack: list[tuple[str, int]] = [("", 0)]
+    while stack:
+        edge_char, old_idx = stack.pop()
+        new_idx = sz
+        sz += 1
+        
+        node = ST[old_idx]
+        cst.append(node)
+        if node.par != -1:
+            cst[node.par].next[edge_char] = new_idx
+        
+        for c, v in sorted(node.next.items(), reverse=True):
+            # add old and new idx to stack
+            stack.append((c, v))
+            ST[v].par = new_idx
+    
+    return cst
+
 if __name__ == "__main__":
-    print(*suffix_tree("mississippi"), sep="\n")
+    s1 = "bacabadabcaba"
+    s2 = "abracadabra"
+    s3 = "acbadabraca"
+    s4 = "mississippi"
+    s = [s1, s2, s3]
+    st = Suffix_Tree(s4)
+    #print(len(st))
+    print(*st, sep="\n")
+    print()
+    #cst = Compact_Sort_ST(st)
+    #print(len(cst))
+    #print(*cst, sep="\n")

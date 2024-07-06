@@ -1,13 +1,21 @@
 # From PYRIVAL
 # Current fastest on judge.yosupo.jp (3 Jul 2024)
 
-def Suffix_Array(s: str):
-    return SAIS([ord(c) for c in s])
+def Suffix_Array(S: str):
+    return SAIS([ord(c) for c in S])
 
-def LCPrefix(s: str, SA: list[int]):
-    return KASAI([ord(c) for c in s], SA)
+def LCPrefix(S: str, SA: list[int]):
+    lcp, rank = Kasai([ord(c) for c in S], SA)
+    return lcp
 
-def SAIS(A: list[int]):
+def LCPrefix_Rank(S: str, SA: list[int]):
+    return Kasai([ord(c) for c in S], SA)
+
+def count_distinct_substrings(S: str, LCP: list[int]) -> int:
+    n = len(S)
+    return n*(n+1)//2 - sum(LCP)
+
+def SAIS(A: list[int]) -> list[int]:
     n = len(A)
     buckets = [0] * (max(A) + 2)
     for a in A:
@@ -63,7 +71,7 @@ def SAIS(A: list[int]):
         LMS = [LMS[i] for i in SAIS([SA[i] for i in LMS])]
     return induced_sort(LMS)
 
-def KASAI(A, SA):
+def Kasai(A, SA) -> tuple[list[int], list[int]]:
     n = len(A)
     rank = [0] * n
     for i in range(n):
@@ -79,4 +87,8 @@ def KASAI(A, SA):
             k += 1
         LCP[SAind] = k
         k -= k > 0
-    return LCP
+    return LCP, rank
+
+s = "ababacaca"
+lcp = LCPrefix(s, Suffix_Array(s))
+print(count_distinct_substrings(s, lcp))
