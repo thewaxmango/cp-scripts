@@ -1,4 +1,5 @@
-# Suffix Array translated from CP-ALGORITHMS
+# Suffix Tree translated from CP-ALGORITHMS
+# surely there is a faster version
 # Generalized coded by me
 
 from dataclasses import dataclass, field
