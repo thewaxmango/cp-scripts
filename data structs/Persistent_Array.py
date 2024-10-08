@@ -1,21 +1,25 @@
 from bisect import bisect_left as bsl, bisect_right as bsr
+from typing import Union
+Numeric = Union[int, float]
 
-def Persistent_Array(arr: list, time: int = -1) -> list[list[tuple]]:
-    return [[(time, v)] for i, v in enumerate(arr)]
+def Persistent_Array(arr: list, time: Numeric = -1) -> list[list[tuple]]:
+    return [[(time, v)] for v in arr]
 
-def pa_get_before(PA: list[list[tuple]], idx: int, time: int):
+# time inclusive
+def pa_get_before(PA: list[list[tuple]], idx: int, time: Numeric):
     subidx = bsr(PA[idx], (time, float("inf"))) - 1
-    if subidx >= len(PA[idx]):
+    if subidx < 0:
         return None
     return PA[idx][subidx]
 
-def pa_get_after(PA: list[list[tuple]], idx: int, time: int):
+# time inclusive
+def pa_get_after(PA: list[list[tuple]], idx: int, time: Numeric):
     subidx = bsl(PA[idx], (time, float("-inf")))
     if subidx >= len(PA[idx]):
         return None
     return PA[idx][subidx]
 
-def pa_update(PA: list[list[tuple]], idx: int, value, time: int) -> bool:
+def pa_update(PA: list[list[tuple]], idx: int, value, time: Numeric) -> bool:
     if time <= PA[idx][-1][0]:
         return False
     PA[idx].append((time, value))

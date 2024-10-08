@@ -5,30 +5,30 @@ def _sum(a, b) -> int:
 
 def Segment_Tree(arr: list, func: Callable = _sum) -> list:
     N = len(arr)
-    tree = [0] * (2*N)
+    st: list = [0] * (2 * N)
     
-    for i in range(n): 
-        tree[n + i] = arr[i]
-    for i in range(n - 1, 0, -1):
-        tree[i] = func(tree[i << 1], tree[i << 1 | 1])
+    for i in range(N): 
+        st[N + i] = arr[i]
+    for i in range(N - 1, 0, -1):
+        st[i] = func(st[i << 1], st[i << 1 | 1])
     
-    return tree + [func]
+    return st + [func]
   
-def update_Segtree(tree: list, idx: int, value):
-    N = len(tree) // 2
-    func: Callable = tree[-1]
+def update_segtree(st: list, idx: int, value):
+    N = len(st) // 2
+    func: Callable = st[-1]
     
-    tree[idx + N] = value
+    st[idx + N] = value
     idx = idx + N
     i = idx
     while i > 1:
-        tree[i >> 1] = func(tree[i], tree[i ^ 1])
+        st[i >> 1] = func(st[i], st[i ^ 1])
         i >>= 1
   
 # r NOT INCLUSIVE
-def Query_Segtree(tree: list, l: int, r: int):
-    N = len(tree) // 2
-    func: Callable = tree[-1]
+def query_segtree(st: list, l: int, r: int):
+    N = len(st) // 2
+    func: Callable = st[-1]
     
     res = 0
     l += N
@@ -36,11 +36,11 @@ def Query_Segtree(tree: list, l: int, r: int):
       
     while l < r :
         if (l & 1):
-            res = func(res, tree[l])
+            res = func(res, st[l])
             l += 1
         if (r & 1):
             r -= 1
-            res = func(res, tree[r])  
+            res = func(res, st[r])  
         l >>= 1
         r >>= 1
       
@@ -51,6 +51,6 @@ if __name__ == "__main__" :
     a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]; 
     n = len(a) 
     t = Segment_Tree(a)
-    print(Query_Segtree(t, 1, 3))
-    update_Segtree(t, 2, 1)
-    print(Query_Segtree(t, 1, 3))
+    print(query_segtree(t, 1, 3))
+    update_segtree(t, 2, 1)
+    print(query_segtree(t, 1, 3))

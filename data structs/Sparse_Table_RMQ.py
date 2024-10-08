@@ -16,7 +16,7 @@ def get_rmq(sparse_table, l, r):
     d = 1 << b
     return min(sparse_table[b][l], sparse_table[b][r - d])
     
-# from yosupo judge
+# from yosupo judge, lacks online functionality
 class SparseTable:
     def __init__(self, arr, op=min):
         self.op = op
