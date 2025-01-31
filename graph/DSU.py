@@ -14,11 +14,9 @@ class DSU:
 
 	# returns whether the merge changed connectivity
 	def union(self, x: int, y: int) -> bool:
-		x_root = self.find(x)
-		y_root = self.find(y)
+		x_root, y_root = self.find(x), self.find(y)
 		if x_root == y_root:
 			return False
-
 		if self.sizes[x_root] < self.sizes[y_root]:
 			x_root, y_root = y_root, x_root
 		self.parents[y_root] = x_root

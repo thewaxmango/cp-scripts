@@ -19,9 +19,9 @@ def N(): PL("NO")
 
 def main():
     for _ in range(II()):
-	    solve()
-
+        solve()
+  
 def solve():
-	pass
-
+    pass
+    
 main()

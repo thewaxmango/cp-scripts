@@ -1,5 +1,6 @@
 from Z_Algorithm import Z
 from Suffix_Array_Class import SuffixArray
+# returns length, start, end (not inclusive)
 
 # Translated from USACO GUIDE
 # gives strict repetitions (no overflow e.g. abcabca)
@@ -14,7 +15,6 @@ def Strict_Main_Lorentz(_s: str) -> list[tuple[int, int, int]]:
     # O(n^2) generates actual pairs
     def convert_to_repetitions(shift: int, left: bool, cntr: int, l: int, k1: int, k2: int) -> None:
         nonlocal repetitions
-        print(cntr, l, k1, k2)
         for l1 in range(max(1, l - k2), min(l, k1) + 1):
             if left and l1 == l:
                 break
@@ -83,5 +83,8 @@ def Run_Enumerate(S: str) -> list[tuple[int, int, int]]:
             lst = l
     return runs
 
-for tup in Run_Enumerate("mississippi"):
+for tup in Run_Enumerate("mississipppi"):
+    print(*tup)
+    
+for tup in Strict_Main_Lorentz("mississipppi"):
     print(*tup)
