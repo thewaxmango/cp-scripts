@@ -18,16 +18,16 @@ class OST_Node:
 # Uses red-black tree structure with order statistic property
 class Order_Statistic_Tree:
     def __init__(self) -> None:
-        self.nil  : OST_Node = OST_Node(None, 0, False)
-        self.root : OST_Node = self.nil
-        self.nil.left = self.nil
-        self.nil.right = self.nil
-        self.nil.par = self.nil
+        self.__nil  : OST_Node = OST_Node(None, 0, False)
+        self.__root : OST_Node = self.__nil
+        self.__nil.left = self.__nil
+        self.__nil.right = self.__nil
+        self.__nil.par = self.__nil
 
     # T -> bool
     # returns whether key exists
     def __contains__(self, v) -> bool:
-        return self.__find(v) is not self.nil
+        return self.__find(v) is not self.__nil
     
     # int -> Optional[T]
     # returns the 0-indexed ith smallest element
@@ -37,22 +37,22 @@ class Order_Statistic_Tree:
     # () -> int
     # returns number of keys in tree
     def __len__(self) -> int:
-        return self.root.size
+        return self.__root.size
 
     # () -> <Iterator[T]>
     # returns keys in order
     def __iter__(self):
-        for v in self.__iterator(self.root):
+        for v in self.__iterator(self.__root):
             yield v 
 
     # T -> None
     def insert(self, v) -> None:
         z = OST_Node(v)
-        y = self.nil
-        x = self.root
+        y = self.__nil
+        x = self.__root
         
         # Find insertion position and update sizes
-        while x is not self.nil:
+        while x is not self.__nil:
             x.size += 1  # Update size directly during traversal
             y = x
             if v < x.key:
@@ -61,19 +61,19 @@ class Order_Statistic_Tree:
                 x = x.right
                 
         z.par = y
-        if y is self.nil:
-            self.root = z
+        if y is self.__nil:
+            self.__root = z
         else:
             if z.key < y.key:
                 y.left = z
             else:
                 y.right = z
                 
-        z.left = self.nil
-        z.right = self.nil
+        z.left = self.__nil
+        z.right = self.__nil
         
         self.__insert_repair(z)
-        self.root.color = False  # Root is always black
+        self.__root.color = False  # Root is always black
 
     # T -> bool
     # deletes one copy of the key
@@ -81,7 +81,7 @@ class Order_Statistic_Tree:
     def erase(self, v) -> bool:
         # find element
         y = self.__find(v)
-        if y is self.nil:
+        if y is self.__nil:
             return False
         
         # find successor and swap
@@ -92,15 +92,15 @@ class Order_Statistic_Tree:
         
         # decrement sizes
         w = z.par
-        while w is not self.nil:
+        while w is not self.__nil:
             w.size -= 1
             w = w.par
         
         # guaranteed z has zero or one children
         w = z.left if z.left else z.right
         if not z.par:
-            self.root = w
-            w.par = self.nil
+            self.__root = w
+            w.par = self.__nil
             w.color = False
         else:
             if z is z.par.left:
@@ -115,18 +115,18 @@ class Order_Statistic_Tree:
                     w.color = False
                 else:
                     self.__delete_repair(w)  # double black
-            self.nil.par = self.nil
+            self.__nil.par = self.__nil
 
         return True
     
     # int -> Optional[T]
     # returns the 0-indexed i-th smallest key
     def select(self, i: int) -> object | None:
-        if i < 0 or not self.root or i >= self.root.size:
+        if i < 0 or not self.__root or i >= self.__root.size:
             return None
             
-        x = self.root
-        while x is not self.nil:
+        x = self.__root
+        while x is not self.__nil:
             left_size = x.left.size
             if left_size == i:
                 return x.key
@@ -139,9 +139,9 @@ class Order_Statistic_Tree:
     # T -> int
     # returns how many keys are strictly smaller
     def rank(self, v) -> int:
-        x = self.root
+        x = self.__root
         total = 0
-        while x is not self.nil:
+        while x is not self.__nil:
             if x.key < v:
                 total += x.left.size + 1
                 x = x.right
@@ -152,18 +152,18 @@ class Order_Statistic_Tree:
     # () -> Optional[T]
     # returns the smallest key
     def min(self):
-        return self.__min_node(self.root).key
+        return self.__min_node(self.__root).key
     
     # () -> Optional[T]
     # returns the largest key
     def max(self):
-        return self.__max_node(self.root).key
+        return self.__max_node(self.__root).key
 
     # T -> Node
     # returns node with value T, or nil if not found
     def __find(self, v) -> OST_Node:
-        x = self.root
-        while x is not self.nil:
+        x = self.__root
+        while x is not self.__nil:
             if x.key == v:
                 break
             x = x.right if x.key < v else x.left
@@ -172,21 +172,21 @@ class Order_Statistic_Tree:
     # Node -> Node
     # returns node in subtree of x with minimum value
     def __min_node(self, x: OST_Node) -> OST_Node:
-        while x.left is not self.nil:
+        while x.left is not self.__nil:
             x = x.left
         return x
     
     # Node -> Node
     # returns node in subtree of x with maximum value
     def __max_node(self, x: OST_Node) -> OST_Node:
-        while x.right is not self.nil:
+        while x.right is not self.__nil:
             x = x.right
         return x
     
     # Node -> <Iterator[T]>
     # yields keys in sorted order
     def __iterator(self, x: OST_Node):
-        if x is self.nil:
+        if x is self.__nil:
             return
         for v in self.__iterator(x.left):
             yield v
@@ -207,7 +207,7 @@ class Order_Statistic_Tree:
         # Update parent relationship
         y.par = x.par
         if not x.par:
-            self.root = y
+            self.__root = y
         elif x is x.par.left:
             x.par.left = y
         else:
@@ -233,7 +233,7 @@ class Order_Statistic_Tree:
         # Update parent relationship
         y.par = x.par
         if not x.par:
-            self.root = y
+            self.__root = y
         elif x is x.par.left:
             x.par.left = y
         else:
@@ -282,14 +282,14 @@ class Order_Statistic_Tree:
                     z.par.par.color = True
                     self.__left_rotate(z.par.par)
                     
-            if z is self.root:
+            if z is self.__root:
                 break
     
     # Node -> None
     # repairs red-black mismatches following deletion
     # input node is the double black
     def __delete_repair(self, x: OST_Node) -> None:
-        while x is not self.root and not x.color:
+        while x is not self.__root and not x.color:
             if x is x.par.left:  # x is left child
                 w = x.par.right  # w is x's sibling
                 
@@ -314,7 +314,7 @@ class Order_Statistic_Tree:
                     x.par.color = False
                     w.right.color = False
                     self.__left_rotate(x.par)
-                    x = self.root
+                    x = self.__root
             else:  # x is right child
                 w = x.par.left  # w is x's sibling
                 
@@ -339,6 +339,6 @@ class Order_Statistic_Tree:
                     x.par.color = False
                     w.left.color = False
                     self.__right_rotate(x.par)
-                    x = self.root
+                    x = self.__root
                     
         x.color = False
