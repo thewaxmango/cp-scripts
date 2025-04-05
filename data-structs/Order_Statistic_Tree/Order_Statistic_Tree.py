@@ -1,7 +1,33 @@
-# Order Statistic Tree based on Red-Black
-# Supports duplicate elements
+"""
+    Order Statistic Tree with Red-Black Tree
+    : Duplicate elements allowed
+    
+    Available OST functions:
+    : ... in x
+    : x[...]
+    : len(x)
+    : for ... in x
+    : iter(x)
+    : reversed(x)
+    : bool(x)
+    : x.insert(...)
+    : x.erase(...)
+    : x.select(...)
+    : x.rank(...)
+    : x.empty()
+    : x.count(...)
+    : x.min()
+    : x.max()
+    : x.popmin()
+    : x.popmax()
+    
+    Todo:
+    : x.prev_val()
+    : x.next_val()
+"""
 
 from dataclasses import dataclass
+
 @dataclass(repr=False, eq=False, slots=True)
 class OST_Node:
     key   : object                   # Optional[T]   : NIL is unique None
@@ -40,10 +66,21 @@ class Order_Statistic_Tree:
         return self.__root.size
 
     # () -> <Iterator[T]>
-    # returns keys in order
+    # returns keys in increasingorder
     def __iter__(self):
         for v in self.__iterator(self.__root):
             yield v 
+
+    # () -> <Iterator[T]>
+    # returns keys in decreasing order
+    def __reversed__(self):
+        for v in self.__rev_iterator(self.__root):
+            yield v 
+
+    # () -> bool
+    # returns true if not empty, false if empty
+    def __bool__(self):
+        return self.__root is self.__nil
 
     # T -> None
     def insert(self, v) -> None:
@@ -83,7 +120,82 @@ class Order_Statistic_Tree:
         y = self.__find(v)
         if y is self.__nil:
             return False
-        
+        self.__delete(y)
+        return True
+    
+    # int -> Optional[T]
+    # returns the 0-indexed i-th smallest key
+    def select(self, i: int) -> object | None:
+        if i < 0 or not self.__root or i >= self.__root.size:
+            return None
+            
+        x = self.__root
+        while x is not self.__nil:
+            left_size = x.left.size
+            if left_size == i:
+                return x.key
+            elif left_size > i:
+                x = x.left
+            else:
+                i -= left_size + 1     
+                x = x.right
+    
+    # T -> int
+    # returns how many keys are strictly smaller
+    def rank(self, v) -> int:
+        x = self.__root
+        total = 0
+        while x is not self.__nil:
+            if x.key < v:
+                total += x.left.size + 1
+                x = x.right
+            else:
+                x = x.left
+        return total
+
+    # () -> bool
+    # returns true if not empty, false if empty
+    def empty(self):
+        return self.__root is self.__nil
+
+    # T -> int
+    # returns how many occurrences of a key exist
+    def count(self, v) -> int:
+        return self.__count(self.__root, v)
+
+    # () -> Optional[T]
+    # returns the smallest key
+    def min(self):
+        return self.__min_node(self.__root).key
+    
+    # () -> Optional[T]
+    # returns the largest key
+    def max(self):
+        return self.__max_node(self.__root).key
+
+    # () -> Optional[T]
+    # pops and returns the smallest key
+    def popmin(self):
+        return self.__delete(self.__min_node(self.__root))
+    
+    # () -> Optional[T]
+    # pops returns the largest key
+    def popmax(self):
+        return self.__delete(self.__max_node(self.__root))
+
+    # T -> Node
+    # returns node with value T, or nil if not found
+    def __find(self, v) -> OST_Node:
+        x = self.__root
+        while x is not self.__nil:
+            if x.key == v:
+                break
+            x = x.right if x.key < v else x.left
+        return x
+    
+    # Node -> T
+    # deletes node from tree and returns value
+    def __delete(self, y: OST_Node):
         # find successor and swap
         z = y
         if y.left and y.right:
@@ -117,57 +229,19 @@ class Order_Statistic_Tree:
                     self.__delete_repair(w)  # double black
             self.__nil.par = self.__nil
 
-        return True
+        return y.key
     
-    # int -> Optional[T]
-    # returns the 0-indexed i-th smallest key
-    def select(self, i: int) -> object | None:
-        if i < 0 or not self.__root or i >= self.__root.size:
-            return None
-            
-        x = self.__root
-        while x is not self.__nil:
-            left_size = x.left.size
-            if left_size == i:
-                return x.key
-            elif left_size > i:
-                x = x.left
-            else:
-                i -= left_size + 1     
-                x = x.right
-    
-    # T -> int
-    # returns how many keys are strictly smaller
-    def rank(self, v) -> int:
-        x = self.__root
-        total = 0
-        while x is not self.__nil:
-            if x.key < v:
-                total += x.left.size + 1
-                x = x.right
-            else:
-                x = x.left
-        return total
-
-    # () -> Optional[T]
-    # returns the smallest key
-    def min(self):
-        return self.__min_node(self.__root).key
-    
-    # () -> Optional[T]
-    # returns the largest key
-    def max(self):
-        return self.__max_node(self.__root).key
-
-    # T -> Node
-    # returns node with value T, or nil if not found
-    def __find(self, v) -> OST_Node:
-        x = self.__root
-        while x is not self.__nil:
-            if x.key == v:
-                break
-            x = x.right if x.key < v else x.left
-        return x
+    # Node -> T -> int
+    # counts occurrences of key in subtree
+    def __count(self, x: OST_Node, v) -> int:
+        if x is self.__nil:
+            return 0
+        if v > x.key:
+            return self.__count(x.right, v)
+        elif v < x.key:
+            return self.__count(x.left, v)
+        else:
+            return 1 + self.__count(x.left, v) + self.__count(x.right, v)
     
     # Node -> Node
     # returns node in subtree of x with minimum value
@@ -184,7 +258,7 @@ class Order_Statistic_Tree:
         return x
     
     # Node -> <Iterator[T]>
-    # yields keys in sorted order
+    # yields keys in increasing order
     def __iterator(self, x: OST_Node):
         if x is self.__nil:
             return
@@ -192,6 +266,17 @@ class Order_Statistic_Tree:
             yield v
         yield x.key
         for v in self.__iterator(x.right):
+            yield v
+            
+    # Node -> <Iterator[T]>
+    # yields keys in deacreasing order
+    def __rev_iterator(self, x: OST_Node):
+        if x is self.__nil:
+            return
+        for v in self.__iterator(x.right):
+            yield v
+        yield x.key
+        for v in self.__iterator(x.left):
             yield v
     
     # Node -> None

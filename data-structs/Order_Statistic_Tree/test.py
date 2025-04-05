@@ -87,6 +87,9 @@ def verify(n = 10**6, bound = 10**9):
     
     print(f'control time: {sum(ct):.4f}\n', " | ".join(['%.4f' % f for f in ct]))
     print(f'testing time: {sum(t):.4f}\n', " | ".join(['%.4f' % f for f in t]))
+    
+    i = iter(ost)
+    print(next(i))
         
 def compare():
     pass
