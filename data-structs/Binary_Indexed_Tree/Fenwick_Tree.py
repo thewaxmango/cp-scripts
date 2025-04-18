@@ -1,27 +1,36 @@
 # FROM PYRIVAL
 # with some added methods
 
+# https://cp-algorithms.com/data_structures/fenwick.html#1-point-update-and-range-query
+# 1. point update, range query
+# 2. range update, point query
+# 3. range update, range query
+
 class FenwickTree:
-    def __init__(self, x):
-        """transform list into BIT"""
-        self.bit = x
-        for i in range(len(x)):
-            j = i | (i + 1)
-            if j < len(x):
-                x[j] += x[i]
+    def __init__(self, n=-1, x=None):
+        if n == -1 and x == None:
+            raise Exception("Empty Fenwick Tree constructor")
+        if x == None:
+            self.bit = [0]*n
+        else:
+            self.bit = x
+            for i in range(len(x)):
+                j = i | (i + 1)
+                if j < len(x):
+                    x[j] += x[i]
 
     def update(self, idx, x):
-        """updates bit[idx] += x"""
         while idx < len(self.bit):
             self.bit[idx] += x
             idx |= idx + 1
     
+    # usually not used with update
     def update_range(self, left, right, x):
         self.update(left, x)
         self.update(right, -x)
 
+    # [0:right]
     def query(self, right):
-        """calc sum(bit[:right])"""
         x = 0
         while right:
             x += self.bit[right - 1]
@@ -31,8 +40,8 @@ class FenwickTree:
     def query_range(self, left, right):
         return self.query(right) - self.query(left)
 
+    # find max idx s.t. sum(bit[:idx]) <= k
     def findkth(self, k):
-        """Find largest idx such that sum(bit[:idx]) <= k"""
         idx = -1
         for d in reversed(range(len(self.bit).bit_length())):
             right_idx = idx + (1 << d)

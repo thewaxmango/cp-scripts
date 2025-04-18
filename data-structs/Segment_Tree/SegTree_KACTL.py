@@ -4,8 +4,13 @@ class SegTree(Generic[T]):
     def __init__(self, n: int, unit: T, f: Callable[[T, T], T]) -> None:
         self.n = n
         self.unit = unit
-        self.st = [unit for _ in range(2 * self.n)]
+        self.st = [unit]*(n*2)
         self.f = f
+    def __getitem__(self, i: int): return self.st[i + self.n]
+    def build(self, arr: list[T]):
+        self.st[self.n:] = arr
+        for idx in range(self.n-1, -1, -1):
+            self.st[idx] = self.f(self.st[idx*2], self.st[idx*2+1])
     def update(self, idx: int, val: T) -> None:
         idx += self.n
         self.st[idx] = val
@@ -17,9 +22,25 @@ class SegTree(Generic[T]):
         while l < r:
             if l % 2: 
                 ra = self.f(ra, self.st[l])
-                l += 1
             if r % 2:
                 r -= 1
                 rb = self.f(self.st[r], rb)
-            l, r = l // 2, r // 2
+            l, r = (l + 1) // 2, r // 2
         return self.f(ra, rb)
+    
+# verification on yosupo
+# https://judge.yosupo.jp/submission/279834
+def main():
+    n, q = map(int, input().split())
+    a = list(map(int, input().split()))
+    st = SegTree(n, 0, lambda x, y: x + y)
+    st.build(a)
+    for _ in range(q):
+        m, j, k = map(int, input().split())
+        if m == 0:
+            st.update(j, st[j]+k)
+        else:
+            print(st.query(j, k))
+
+if __name__ == "__main__":
+    main()
