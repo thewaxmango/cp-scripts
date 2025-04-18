@@ -6,7 +6,8 @@ class SegTree(Generic[T]):
         self.unit = unit
         self.st = [unit]*(n*2)
         self.f = f
-    def __getitem__(self, i: int): return self.st[i + self.n]
+    def __getitem__(self, idx: int): return self.st[idx + self.n]
+    def __setitem__(self, idx: int, val: T): self.update(idx, val)
     def build(self, arr: list[T]):
         self.st[self.n:] = arr
         for idx in range(self.n-1, -1, -1):
