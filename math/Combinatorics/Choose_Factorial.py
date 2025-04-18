@@ -11,4 +11,4 @@ for v in range(1, 4*10**5 + 10):
 def choose(n, x):
     return fact[n] * invfact[x] % MOD * invfact[n - x] % MOD
 
-print(math.gcd(10, 5))
+print(choose(10, 5))

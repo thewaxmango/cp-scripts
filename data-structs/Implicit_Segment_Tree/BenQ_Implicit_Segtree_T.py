@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional, TypeVar, Generic, Callable
 
 #^ queries inclusively
-#^ operation should be commutative and associative
+#^ operation should be associative
 T = TypeVar('T')
 class SSNodeT(Generic[T]):
     SZ: int = 2**17

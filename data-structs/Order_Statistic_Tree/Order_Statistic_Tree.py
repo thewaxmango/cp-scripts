@@ -427,3 +427,14 @@ class Order_Statistic_Tree:
                     x = self.__root
                     
         x.color = False
+
+def test():
+    ost = Order_Statistic_Tree()
+    ost.insert(10)
+    ost.insert(2)
+    ost.insert(4)
+    ost.insert(-1)
+    ost.erase(2)
+
+if __name__ == "__main__":
+    test()

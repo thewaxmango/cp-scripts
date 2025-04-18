@@ -54,7 +54,6 @@ def topological_sort2(adjs):
 
 # smdbs's bfs
 from collections import deque
-from typing import *
 
 def topologicalSort(g):
     # g: adj list
