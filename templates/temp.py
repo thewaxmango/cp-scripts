@@ -26,4 +26,5 @@ def main():
 def solve():
     pass
     
-main()
+if __name__ == "__main__":
+	main()
