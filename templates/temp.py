@@ -16,6 +16,7 @@ def PA(arg,end='\n'): P(*arg, sep='\n', end=end)
 def F(): stdout.flush()
 def Y(): PL("YES")
 def N(): PL("NO")
+def YN(b): YES() if b else NO()
 
 def main():
     for _ in range(II()):
