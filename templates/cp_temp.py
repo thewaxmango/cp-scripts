@@ -8,6 +8,7 @@ def IIL(): return list(map(int, IL()))
 def IFL(): return list(map(float, IL()))
 def IM(): return map(str, IL())
 def IIM(): return map(int, IL())
+def IIMD(): return map(lambda x: int(x)-1, IL())
 def IFM(): return map(float, IL())
 def ICLM(): return map(int, ICL())
 def P(*args,sep=' ',end=''): stdout.write(sep.join([str(s) for s in args]) + end)
@@ -16,12 +17,14 @@ def PA(arg,end='\n'): P(*arg, sep='\n', end=end)
 def F(): stdout.flush()
 def Y(): PL("YES")
 def N(): PL("NO")
+def YN(b): YES() if b else NO()
 
 def main():
     for _ in range(II()):
-	    solve()
-
+        solve()
+  
 def solve():
-	pass
-
-main()
+    pass
+    
+if __name__ == "__main__":
+	main()
