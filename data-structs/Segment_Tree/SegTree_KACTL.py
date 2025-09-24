@@ -1,23 +1,21 @@
-from typing import Callable, TypeVar, Generic
-T = TypeVar('T')
-class SegTree(Generic[T]):
-    def __init__(self, n: int, unit: T, f: Callable[[T, T], T]) -> None:
+class SegTree:
+    def __init__(self, n: int, unit, f) -> None:
         self.n = n
         self.unit = unit
         self.st = [unit]*(n*2)
         self.f = f
     def __getitem__(self, idx: int): return self.st[idx + self.n]
-    def __setitem__(self, idx: int, val: T): self.update(idx, val)
-    def build(self, arr: list[T]):
+    def __setitem__(self, idx: int, val): self.update(idx, val)
+    def build(self, arr: list):
         self.st[self.n:] = arr
         for idx in range(self.n-1, -1, -1):
             self.st[idx] = self.f(self.st[idx*2], self.st[idx*2+1])
-    def update(self, idx: int, val: T) -> None:
+    def update(self, idx: int, val) -> None:
         idx += self.n
         self.st[idx] = val
         while (idx := idx // 2):
             self.st[idx] = self.f(self.st[idx*2], self.st[idx*2+1])
-    def query(self, l: int, r: int) -> T: # right-exclusive
+    def query(self, l: int, r: int): # right-exclusive
         ra, rb = self.unit, self.unit
         l, r = l + self.n, r + self.n 
         while l < r:
@@ -28,6 +26,7 @@ class SegTree(Generic[T]):
                 rb = self.f(self.st[r], rb)
             l, r = (l + 1) // 2, r // 2
         return self.f(ra, rb)
+
     
 # verification on yosupo
 # https://judge.yosupo.jp/submission/279834
