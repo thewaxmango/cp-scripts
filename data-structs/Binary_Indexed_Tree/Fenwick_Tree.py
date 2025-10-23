@@ -8,8 +8,6 @@
 
 class FenwickTree:
     def __init__(self, n=-1, x=None):
-        if n == -1 and x == None:
-            raise Exception("Empty Fenwick Tree constructor")
         if x == None:
             self.bit = [0]*n
         else:
@@ -24,11 +22,6 @@ class FenwickTree:
             self.bit[idx] += x
             idx |= idx + 1
     
-    # usually not used with update
-    def update_range(self, left, right, x):
-        self.update(left, x)
-        self.update(right, -x)
-
     # [0:right]
     def query(self, right):
         x = 0
@@ -39,6 +32,11 @@ class FenwickTree:
     
     def query_range(self, left, right):
         return self.query(right) - self.query(left)
+    
+    # usually not used with update
+    def update_range(self, left, right, x):
+        self.update(left, x)
+        self.update(right, -x)
 
     # find max idx s.t. sum(bit[:idx]) <= k
     def findkth(self, k):
