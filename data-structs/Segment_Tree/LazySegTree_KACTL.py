@@ -1,6 +1,6 @@
 class LazySegNode:
     __slots__ = ('l', 'r', 'lo', 'hi', 'f', 'unit', 'apply', 'comp', 'noop', 'lazy', 'val')
-    def __init__(self, lo, hi, *, f, unit, apply, comp, noop, arr=None):
+    def __init__(self, lo, hi, f, unit, apply, comp, noop, arr=None):
         self.l = self.r = None
         self.lo, self.hi = lo, hi
         self.f = f
