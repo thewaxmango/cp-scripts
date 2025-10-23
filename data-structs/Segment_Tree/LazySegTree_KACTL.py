@@ -1,5 +1,5 @@
 class LazySegNode:
-    __slots__ = ('l', 'r', 'lo', 'hi', 'f', 'unit', 'apply', 'comp', 'noop', 'lazy')
+    __slots__ = ('l', 'r', 'lo', 'hi', 'f', 'unit', 'apply', 'comp', 'noop', 'lazy', 'val')
     def __init__(self, lo, hi, *, f, unit, apply, comp, noop, arr=None):
         self.l = self.r = None
         self.lo, self.hi = lo, hi
@@ -9,6 +9,7 @@ class LazySegNode:
         self.comp = comp
         self.noop = noop
         self.lazy = noop
+        self.val = unit
         if arr is not None:
             if lo + 1 < hi:
                 mid = (lo + hi) // 2
@@ -17,8 +18,6 @@ class LazySegNode:
                 self.val = f(self.l.val, self.r.val)
             else:
                 self.val = arr[lo]
-        else:
-            self.val = unit
     def _ensure_children(self):
         if not self.l:
             mid = (self.lo + self.hi) // 2
